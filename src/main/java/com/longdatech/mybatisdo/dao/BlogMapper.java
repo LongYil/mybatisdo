@@ -5,8 +5,10 @@ import org.apache.ibatis.annotations.Select;
 
 public interface BlogMapper {
 
-    Blog selectBlog(Integer id);
+    int count();
 
-    @Select("SELECT COUNT(*) FROM blog")
-    int countAll();
+    @Select(value = "SELECT * FROM blog WHERE id = #{id}")
+    Blog selectById(Integer id);
+
+
 }

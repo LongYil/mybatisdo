@@ -8,28 +8,27 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Collection;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
 public class DemoTest {
 
-    static String resource = "mybatis-config.xml";
-    static BlogMapper blogMapper = null;
-
+    static SqlSessionFactory sqlSessionFactory;
+    static BlogMapper blogMapper;
     static {
         try{
+            String resource = "mybatis-config.xml";
             InputStream inputStream = Resources.getResourceAsStream(resource);
-            SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+            sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
             SqlSession sqlSession = sqlSessionFactory.openSession();
             blogMapper = sqlSession.getMapper(BlogMapper.class);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
-
     @Test
     public void test1() throws Exception{
         String resource = "mybatis-config.xml";
@@ -37,37 +36,54 @@ public class DemoTest {
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
         SqlSession sqlSession = sqlSessionFactory.openSession();
         BlogMapper blogMapper = sqlSession.getMapper(BlogMapper.class);
-        Blog blog = blogMapper.selectBlog(1);
+        int num = blogMapper.count();
+        System.out.println(num);
+    }
+
+    @Test
+    public void test2(){
+        Blog blog = blogMapper.selectById(1);
         System.out.println(blog);
     }
 
     @Test
-    public void test2() throws Exception{
-        String resource = "mybatis-config.xml";
-        URL url = Resources.getResourceURL(resource);
-        System.out.println(url);
-        Object obj = url.getContent();
-        System.out.println(obj);
+    public void test3() throws Exception{
+        Reader reader = new FileReader("E:\\C\\mybatisdo\\src\\main\\resources\\mybatis-config.xml");
+        Properties properties = new Properties();
+        properties.setProperty("username","root");
+        properties.setProperty("password","root");
+        properties.setProperty("url","jdbc:mysql://localhost:3306/mybatisdo?characterEncoding=utf-8");
+        properties.setProperty("driver","com.mysql.jdbc.Driver");
+        SqlSessionFactory factory = new SqlSessionFactoryBuilder().build(reader, properties);
+        SqlSession sqlSession = factory.openSession();
+        BlogMapper mapper = sqlSession.getMapper(BlogMapper.class);
+        System.out.println(mapper);
+        mapper.selectById(1);
+//        System.out.println(mapper.count());
     }
 
     @Test
-    public void test3(){
+    public void test4() throws Exception{
+        Properties properties = new Properties();
+        InputStream inputStream = new FileInputStream("src/main/resources/db.properties");
+        properties.load(inputStream);
+        Set set = properties.stringPropertyNames();
+        set.forEach(i->{
+            System.out.println(i);
+        });
+    }
+
+    @Test
+    public void test5(){
+        File f = new File("src/main/resources/db.properties");
+        System.out.println(f.getAbsolutePath());
+    }
+
+    @Test
+    public void test6(){
+        Blog res = blogMapper.selectById(1);
+        System.out.println(res);
+
         Collection collection;
-
-        int i = blogMapper.countAll();
-        System.out.println("总记录数:" + i);
-
-    }
-
-    @Test
-    public void test(){
-        Integer[] a = new Integer[2];
-        List<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        Integer[] b = list.toArray(a);
-        System.out.println(a);
-        System.out.println(b);
     }
 }
