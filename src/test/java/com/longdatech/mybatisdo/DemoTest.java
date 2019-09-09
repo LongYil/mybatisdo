@@ -1,6 +1,5 @@
 package com.longdatech.mybatisdo;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.longdatech.mybatisdo.dao.BlogMapper;
 import com.longdatech.mybatisdo.po.Blog;
 import org.apache.ibatis.io.Resources;
@@ -10,12 +9,10 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.lang.reflect.Type;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class DemoTest {
 
@@ -38,7 +35,6 @@ public class DemoTest {
         String resource = "mybatis-config.xml";
         InputStream inputStream = Resources.getResourceAsStream(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    }
         SqlSession sqlSession = sqlSessionFactory.openSession();
         BlogMapper blogMapper = sqlSession.getMapper(BlogMapper.class);
         Blog blog = blogMapper.selectBlog(1);
@@ -73,11 +69,5 @@ public class DemoTest {
         Integer[] b = list.toArray(a);
         System.out.println(a);
         System.out.println(b);
-    @Test
-    public void test4(){
-//        SqlSessionFactory factory = new SqlSessionFactoryBuilder.build(reader, environment, props);
-//        new SqlSessionFactoryBuilder().build(null,null,null);
-//        SqlSessionFactory factory = new SqlSessionFactoryBuilder.build(null, null, null);
-
     }
 }
