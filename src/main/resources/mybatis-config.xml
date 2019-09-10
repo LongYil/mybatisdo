@@ -10,6 +10,15 @@
     <typeAliases>
         <package name="com.longdatech.mybatisdo.po"/>
     </typeAliases>
+
+    <typeHandlers>
+        <typeHandler handler="com.longdatech.mybatisdo.typehandler.ExampleTypeHandler" jdbcType="VARCHAR" javaType="java.lang.String"/>
+    </typeHandlers>
+
+    <objectFactory type="com.longdatech.mybatisdo.beanfactory.ExampleObjectFactory">
+        <property name="someProperty" value="100"/>
+    </objectFactory>
+
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
@@ -21,8 +30,12 @@
             </dataSource>
         </environment>
     </environments>
+
     <mappers>
-<!--        <mapper resource="mapper/BlogMapper.xml"/>-->
-        <mapper class="com.longdatech.mybatisdo.dao.BlogMapper"/>
+        <mapper resource="mapper/BlogMapper.xml"/>
+        <!--<mapper class="com.longdatech.mybatisdo.dao.BlogMapper"/>-->
     </mappers>
+    <!-- mybatis-config.xml -->
+
+
 </configuration>
