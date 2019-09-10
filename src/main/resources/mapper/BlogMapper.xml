@@ -3,11 +3,51 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.longdatech.mybatisdo.dao.BlogMapper">
+    <resultMap id="BaseResultMap" type="com.longdatech.mybatisdo.po.Blog">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+    </resultMap>
+    <resultMap id="BaseResultMap2" type="com.longdatech.mybatisdo.po.Blog">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
 
+    <sql id="BaseColumnList">
+        id,title,content,create_time
+    </sql>
 
     <select id="count" resultType="java.lang.Integer">
-    select COUNT(*) from blog
-  </select>
+      select COUNT(*) from blog
+    </select>
 
+    <!--<select id="selectByTitle" resultMap="BaseResultMap2">-->
+    <!--SELECT-->
+    <!--<include refid="BaseColumnList"/>-->
+    <!--FROM blog-->
+    <!--WHERE title = #{title} AND id = #{id}-->
+    <!--</select>-->
 
+    <select id="selectByTitle" resultType="com.longdatech.mybatisdo.po.Blog">
+        SELECT
+        <include refid="BaseColumnList"/>
+        FROM blog
+        WHERE title = #{title} AND id = #{id}
+    </select>
+
+    <select id="selectById" resultType="com.longdatech.mybatisdo.po.Blog">
+        SELECT
+        <include refid="BaseColumnList"/>
+        FROM blog
+        WHERE id != 0
+    </select>
+
+    <select id="selectById2" resultType="com.longdatech.mybatisdo.po.Blog">
+        SELECT
+        <include refid="BaseColumnList"/>
+        FROM blog
+        WHERE id != 0
+    </select>
 </mapper>
