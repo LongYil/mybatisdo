@@ -9,10 +9,8 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class DemoTest {
 
@@ -85,5 +83,72 @@ public class DemoTest {
         System.out.println(res);
 
         Collection collection;
+    }
+
+    @Test
+    public void test9() throws Exception{
+        long start = System.currentTimeMillis(),end,used;
+
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+        CountDownLatch countDownLatch2 = new CountDownLatch(2);
+        List<Integer> list = new Vector<>();
+
+        Thread t0 = new Thread(()->{
+            System.out.println("开始添加元素");
+            for (int i = 0; i < 80000000; i++){
+                list.add(i);
+            }
+            System.out.println("添加函数结束：size=" + list.size());
+            countDownLatch.countDown();
+        });
+        t0.start();
+        countDownLatch.await();
+
+        System.out.println("开始转换为数组");
+        Thread t1 = new Thread(()->{
+            System.out.println("线程1开始");
+            long s=System.currentTimeMillis(),e,u;
+            Integer[] t = new Integer[80000011];
+            Integer[] b = list.toArray(t);
+            System.out.println("b输出结果：");
+            for (int i = 0; i < 10; i++){
+                System.out.print(b[i] + ",");
+            }
+            System.out.println();
+            System.out.println("list输出结果：");
+            for (int k = 0; k < 10; k++){
+                System.out.print(list.get(k) + ",");
+            }
+            e = System.currentTimeMillis();
+            u = e - s;
+            System.out.println("线程1结束,转换总耗时=" + u + ",b总长度:" + b.length + ",list总长度：" + list.size());
+            countDownLatch2.countDown();
+        });
+
+        Thread t2 = new Thread(()->{
+            System.out.println("线程2开始");
+            try{
+                Thread.sleep(50);
+                for (int i = 0;i < 10; i++){
+                    list.remove(0);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            System.out.println("线程2结束:size:" + list.size());
+            countDownLatch2.countDown();
+        });
+
+        t1.start();
+        t2.start();
+
+        countDownLatch2.await();
+        end = System.currentTimeMillis();
+        used = end - start;
+        System.out.println("最终结果：");
+        for (int k = 0; k < 10; k++){
+            System.out.print(list.get(k) + ",");
+        }
+        System.out.println("used:" + used);
     }
 }
